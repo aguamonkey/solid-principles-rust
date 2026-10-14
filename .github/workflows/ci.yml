@@ -1,0 +1,20 @@
+name: Workbook checks
+on:
+  push:
+    branches: [develop, main, 'feature/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust checks
+        run: rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test --all-targets
+      - run: cargo run -- all
+      - run: python3 scripts/check_docs.py

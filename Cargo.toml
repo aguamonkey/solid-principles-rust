@@ -1,0 +1,8 @@
+[package]
+name = "solid-workbook"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "A Rust workbook for testing five SOLID design decisions"
+
+[dependencies]
