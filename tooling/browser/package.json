@@ -1,0 +1,14 @@
+{
+  "name": "release-console-browser-checks",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "format": "prettier --write ../../console",
+    "format:check": "prettier --check ../../console"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "prettier": "3.9.10"
+  }
+}

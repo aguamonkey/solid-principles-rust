@@ -1,27 +1,33 @@
-# One question, one change, one test
+# Learn one promise, then follow it through the system
 
-[Repository](../README.md)
+[Repository](../README.md) · [Rust orientation](RUST_START.md)
 
-1. Pick a lesson. Read its guide and source for ten minutes.
-2. Run its CLI demonstration. Explain the result you expect before running it.
-3. Answer one interview prompt aloud before reading answer notes.
-4. In a separate coding session, attempt the exercise and add a test for behaviour that matters.
-5. Write three lines: what changed, what stayed stable, and what limitation remains.
+## A simple first session
 
-Study SRP → OCP → LSP → ISP → DIP first. Revisit your weakest example rather than treating completion as a score.
+1. Run the browser console. Load the explicit samples and inspect one manifest.
+2. Run **Preview committed / response lost** in the failure simulator. Predict how many builds and preview effects remain.
+3. Read [DIP's system guide](../lessons/5-dip/system/README.md) and find the three supplier calls in `process_release`.
+4. Explain why the first error cannot establish that nothing happened.
 
-## Compare languages after recall
+Then study the foundations in SRP → OCP → LSP → ISP → DIP order. Run the tiny CLI example, read its source and attempt its exercise before opening the solution.
 
-Start without notes in the language you know best. Then explain the same question in Rust. Ask what ownership prevents, where interior mutability remains possible, and which Result variants the caller must handle. Use a different fixture or change request to avoid memorising identical code.
+## Three levels of reasoning
 
-## Next progression
-
-| Stage | Current status | Next pressure |
+| Scope | What you should explain | Material |
 | --- | --- | --- |
-| Foundation | All five source examples, CLI demos, tests and study documents | Complete an exercise and justify the boundary |
-| Reliable feature | Not implemented | Failure retention, richer outcomes, more consumers and lifecycle policies |
-| System contracts | Not implemented | Versioning, durable identity, concurrency and safe migration |
+| Foundation | One boundary and one promise | Five small modules, CLI demonstrations, original exercises |
+| Reliable feature | Explicit failure outcomes and extension points | Console capture, report registry, owned manifests, publication policy |
+| System | Durable identity, transactions, adapter substitution and concurrency | SQLite, shared contracts, process restart checks, HTTP/browser integration |
 
-The next feature milestone should start with SRP, then grow each lesson under one concrete pressure. These are reasoning scopes, not automatic job titles.
+All five principles now have a system guide, exercise, separate solution notes and interview prompts. Levels describe the scope of reasoning, not guaranteed job titles.
 
-For interview practice, connect a decision to source, a test and an alternative. This workbook complements language/platform study and examples from your real work; it cannot establish job readiness by itself.
+## A repeatable 35-minute session
+
+Spend ten minutes on the foundation, ten following one running feature, ten attempting a small change with a meaningful test, then five explaining the trade-off aloud. Write what changed, what stayed stable and what remains uncertain.
+Use the [walkthrough](WALKTHROUGH.md) before trying to understand every module. Read [architecture](ARCHITECTURE.md) when deciding which module should change.
+
+## Compare after recall
+
+Start in the language you know best. Then explain what Rust changes: ownership, `&self`, trait objects, explicit `Result`, interior mutability and thread-safety bounds. Compare contracts, not class names.
+
+For interview practice, connect a decision to one actual test and a credible simpler alternative. Keep real work experience and platform preparation alongside this workbook.

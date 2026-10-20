@@ -22,6 +22,10 @@ State the consumer’s promise, point to its implementation, then name the test 
 
 ## Progression and limits
 
-This is a runnable foundation with behavioural tests. A later feature stage can add failure recovery and more consumers; a system stage can define migration, versioning, concurrency and durable supplier contracts. Those advanced stages are not implemented by this initial milestone.
+This foundation stays small so you can study the principle in isolation. The linked Release Console system track applies the same design question to real storage, extensible reports and explicit failure recovery. Automatic schema migration and external release delivery remain outside the current system.
 
 No number of traits, protocols, files or classes proves SOLID. The chosen change pressure and consumer behaviour justify the boundary. These trusted, synchronous examples cannot establish universal substitutability or production safety.
+
+## Apply this in the running system
+
+Continue to the [Release Console system study](system/README.md), with an exercise, solution direction and interview rehearsal.

@@ -12,3 +12,5 @@ impl std::fmt::Display for RuleError {
     }
 }
 impl std::error::Error for RuleError {}
+
+pub mod console;

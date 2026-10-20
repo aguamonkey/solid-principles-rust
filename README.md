@@ -1,43 +1,82 @@
-# SOLID principles · Rust
+# Release Console · SOLID in Rust
 
-A workbook for explaining five design decisions through runnable local examples, behavioural tests and small changes. Start with one lesson, run it, and attempt its exercise before reading the solution.
+**A build is a fact. A release is a process.**
 
-| Lesson | Setting | Design question |
-| --- | --- | --- |
-| [01 · Single Responsibility](lessons/1-srp/README.md) | Build journal | Where should this change belong? |
-| [02 · Open/Closed](lessons/2-ocp/README.md) | Report bench | Which algorithm stays stable when another format is added? |
-| [03 · Liskov Substitution](lessons/3-lsp/README.md) | Artifact manifest | Does the replacement honour the caller’s promise? |
-| [04 · Interface Segregation](lessons/4-isp/README.md) | Build board | Which operations does this consumer need? |
-| [05 · Dependency Inversion](lessons/5-dip/README.md) | Release desk | Can suppliers change independently of policy? |
+A working Rust build journal with a browser console, durable request identities, extensible reports and a disposable failure simulator. Study each SOLID principle independently, then trace all five through one system.
 
-## Run and verify
+![Release Console dashboard](docs/images/release-console.png)
 
-Use a stable Rust toolchain with rustfmt and Clippy, plus Python 3.9 or newer for the small documentation checker. The crate has no third-party dependencies. CI uses stable Rust.
+## Run the console
 
-```bash
-cargo run -- all
-cargo fmt --check
-cargo clippy --all-targets -- -D warnings
-cargo test --all-targets
-python3 scripts/check_docs.py
+Install stable Rust with Cargo, rustfmt and Clippy. Building bundled SQLite needs a C compiler (Xcode command-line tools on macOS; a normal C build toolchain on Linux). No Node or Python package install is needed to run the app.
+
+```sh
+cargo run --locked --bin release-console
 ```
 
-Replace `all` with `srp`, `ocp`, `lsp`, `isp` or `dip` to focus on one demonstration. Commands work from the repository root. Tests run separate fixtures without contacting services. There is no browser app in this initial milestone.
+Open **http://127.0.0.1:5190**. Choose **Load three sample builds** explicitly, or register your own. Records persist in ignored `data/releases.sqlite3`. Nothing uploads, publishes externally or sends email.
 
-## How to study
+```sh
+# Disposable storage; intentionally loses data on restart:
+cargo run --locked --bin release-console -- --memory
+# OCP: compose one more renderer without changing intake/publication:
+cargo run --locked --bin release-console -- --markdown
+# Alternate local port or database:
+cargo run --locked --bin release-console -- --port 5192 --database data/alternate.sqlite3
+```
 
-Follow the [study path](docs/LEARNING_PATH.md). Each lesson links to actual source, tests, an exercise, separate solution notes and interview prompts. The settings use ownership, borrowing, traits, dynamic dispatch and typed outcomes rather than translating another language mechanically.
+Stop the previous server before starting a replacement on the same port. The server binds loopback only. This is a local study tool, not a public deployment.
 
-This initial foundation is deliberately smaller than the mature Swift/TypeScript workbooks. It does not yet include their interactive applications or advanced feature/system labs. The [progression](docs/LEARNING_PATH.md) identifies the next steps and keeps that scope visible.
+## Choose your learning depth
 
-## Cross-language practice
+| Principle | Foundation | In the running system |
+| --- | --- | --- |
+| SRP | [Build journal](lessons/1-srp/README.md) | [Validation, storage and publication boundaries](lessons/1-srp/system/README.md) |
+| OCP | [Report bench](lessons/2-ocp/README.md) | [Composed report renderers](lessons/2-ocp/system/README.md) |
+| LSP | [Fixed artifact manifest](lessons/3-lsp/README.md) | [Memory/SQLite behavioural contracts](lessons/3-lsp/system/README.md) |
+| ISP | [Borrowed build board](lessons/4-isp/README.md) | [Reader, writer, queue and preview capabilities](lessons/4-isp/system/README.md) |
+| DIP | [Release desk](lessons/5-dip/README.md) | [Policy-owned ports and failure recovery](lessons/5-dip/system/README.md) |
 
-Compare one design question across [Swift](https://github.com/aguamonkey/SOLID-Principles-with-Swift), [TypeScript](https://github.com/aguamonkey/solid-principles-typescript), [Python](https://github.com/aguamonkey/solid-principles-python). First explain the promise, then explain how this language changes its implementation. Matching class names is not the study goal.
+The original five CLI lessons remain available with `cargo run --locked -- all`, or replace `all` with `srp`, `ocp`, `lsp`, `isp`, `dip`.
 
-## Evidence and limits
+[Rust orientation](docs/RUST_START.md) · [Study path](docs/LEARNING_PATH.md) · [Guided tour](docs/WALKTHROUGH.md) · [Architecture](docs/ARCHITECTURE.md) · [API](docs/API.md) · [Interview practice](docs/INTERVIEW_PREP.md)
 
-Nineteen integration tests cover validation, extension, snapshot behaviour, borrowed reading and partial publication failure. Compiler checks and Clippy complement behavioural tests; ownership does not establish every domain promise.
+## Verify
 
-The link checker covers local inline Markdown targets and excludes external URLs and heading fragments. It is not a full Markdown parser. These examples have no durable storage, network, authentication, asynchronous execution or exactly-once guarantees. Two snapshot samples do not prove behaviour for every future implementation. Rust Unavailable is permitted by the manifest contract; Python snapshot exceptions propagate. Those contracts are intentionally explicit.
+```sh
+cargo fmt --check
+cargo clippy --all-targets --locked -- -D warnings
+cargo test --all-targets --locked
+cargo build --bins --locked
+python3 scripts/check_docs.py
+python3 scripts/smoke_console.py
+```
+
+Python 3.9+ is sufficient for the standard-library tooling. The smoke check uses its own database and port, restarts real processes, and verifies that SQLite history/request bindings/acknowledgements persist while memory storage does not.
+
+Optional browser checks require Node 22+:
+
+```sh
+cd tooling/browser
+npm ci
+npx playwright install chromium
+npm test
+```
+
+The current suite has **63 Rust tests and eight browser tests**.
+
+CI runs Rust checks, the foundation demonstrations, local documentation links, real HTTP restarts and Playwright flows. The [verification notes](docs/VERIFICATION.md) distinguish tested behaviour from limitations.
+
+## Why Rust?
+
+Private validated values, owned projections, `Result` variants, borrowed capability traits, `Arc` and `Mutex` make several boundaries explicit. Rust still cannot prove that an implementation honours domain promises such as idempotency or stable ordering; those have behavioural contracts.
+
+The system uses real transactions and a stable local preview identity to study uncertain acknowledgements. It does not claim exactly-once delivery to external systems. There is no artifact upload, authentication, background release worker, deployment pipeline or automatic schema migration.
+
+## Related projects
+
+[Swift](https://github.com/aguamonkey/SOLID-Principles-with-Swift) · [TypeScript](https://github.com/aguamonkey/solid-principles-typescript) · [Python](https://github.com/aguamonkey/solid-principles-python) · [Connected ecosystem](https://github.com/aguamonkey/solid-ecosystem)
+
+This workbook remains independent. The later ecosystem Rust collector will reuse the reasoning about immutable intent and retries, rather than importing this release domain mechanically.
 
 [Contributing](CONTRIBUTING.md) · [MIT licence](LICENSE)

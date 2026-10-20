@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f5f7fc" />
+    <title>Release Console / Rust SOLID Lab</title>
+    <meta
+      name="description"
+      content="A working Rust release desk for learning SOLID, ownership, contracts and failure recovery."
+    />
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <aside class="rail">
+      <a class="brand" href="/"
+        ><span class="brand-mark">R/</span><span>RELEASE<br />CONSOLE</span></a
+      >
+      <p class="rail-label">RUST / SOLID WORKBOOK</p>
+      <a class="nav active" href="#workspace"
+        >01 <span>Build workspace</span><b>↗</b></a
+      ><a class="nav" href="#failure-lab"
+        >02 <span>Failure simulator</span><b>↗</b></a
+      ><a class="nav" href="#study">03 <span>Study the seams</span><b>↗</b></a>
+      <div class="rail-footer">
+        <span class="stack-dot"></span>LOCAL STUDY EDITION
+        <p>Real storage.<br />Disposable experiments.</p>
+        <a href="https://github.com/aguamonkey/solid-principles-rust"
+          >Repository ↗</a
+        >
+      </div>
+    </aside>
+    <main>
+      <header>
+        <span>ENGINEERING LAB / 001</span>
+        <div id="connection" role="status">Checking journal…</div>
+        <span class="rust-badge">BUILT WITH RUST</span>
+      </header>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">A BUILD IS A FACT. A RELEASE IS A PROCESS.</p>
+          <h1>Ship the build.<br /><span>Keep the evidence.</span></h1>
+          <p>
+            Record an immutable build. Inspect its manifest. Follow the boundary
+            between a saved intent and a confirmed release.
+          </p>
+        </div>
+        <div class="system-graphic" aria-hidden="true">
+          <div class="orbital o1"></div>
+          <div class="orbital o2"></div>
+          <div class="graphic-core">Rc<span>RELEASE CONTROL</span></div>
+          <span class="coordinate">BUILD → RECORD → PREVIEW</span>
+        </div>
+      </section>
+      <div class="section-title" id="workspace">
+        <h2><span>01</span> Build workspace</h2>
+        <button id="samples" class="text-button">
+          Load three sample builds ↗
+        </button>
+      </div>
+      <div class="workspace">
+        <section class="capture panel" aria-labelledby="record-title">
+          <div class="panel-kicker">INPUT / VALIDATED INTENT</div>
+          <h3 id="record-title">Register a build</h3>
+          <p>
+            One identity. One set of facts. Confirmed builds cannot be
+            overwritten.
+          </p>
+          <form id="record">
+            <fieldset id="fields">
+              <label for="identity">Build identity</label
+              ><input
+                id="identity"
+                required
+                maxlength="64"
+                pattern="[A-Za-z0-9_-]{1,64}"
+                placeholder="atlas-042"
+                autocomplete="off"
+              /><label for="project">Project</label
+              ><input
+                id="project"
+                required
+                maxlength="80"
+                placeholder="Atlas command line"
+              /><label for="duration">Duration <span>milliseconds</span></label
+              ><input
+                id="duration"
+                type="number"
+                required
+                min="0"
+                max="3600000"
+                step="1"
+                placeholder="420"
+              /><label for="artifacts"
+                >Artifact filenames <span>one per line / up to 8</span></label
+              ><textarea
+                id="artifacts"
+                required
+                rows="3"
+                placeholder="atlas.bin&#10;manifest.json"
+              ></textarea>
+            </fieldset>
+            <button id="submit" type="submit" class="primary">
+              Record build <span>→</span>
+            </button>
+          </form>
+          <p id="record-status" class="status" role="status">
+            Ready for a new build.
+          </p>
+          <button id="new-intent" class="text-button" hidden>
+            Start another submission
+          </button>
+          <p class="fine">
+            An uncertain response retains this tab’s original request key and
+            values. Reloading the tab loses that intent.
+          </p>
+        </section>
+        <section class="journal panel" aria-labelledby="journal-title">
+          <div class="panel-head">
+            <div>
+              <div class="panel-kicker">OUTPUT / CONFIRMED RECORDS</div>
+              <h3 id="journal-title">Build journal</h3>
+            </div>
+            <button id="refresh" class="outline">Refresh ↻</button>
+          </div>
+          <div class="journal-toolbar">
+            <span id="count">0 loaded</span>
+            <div>
+              <label class="sr-only" for="format">Report format</label
+              ><select id="format" disabled>
+                <option>Loading formats</option></select
+              ><a
+                id="export"
+                href="/api/reports/json?limit=100"
+                target="_blank"
+                rel="noreferrer"
+                >Export first 100 ↗</a
+              >
+            </div>
+          </div>
+          <p id="read-status" class="status" role="status">
+            Reading the journal…
+          </p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>SEQ</th>
+                  <th>BUILD / PROJECT</th>
+                  <th>DURATION</th>
+                  <th>MANIFEST</th>
+                </tr>
+              </thead>
+              <tbody id="builds"></tbody>
+            </table>
+          </div>
+          <button id="more" class="outline" hidden>Load next page →</button>
+          <div class="manifest" id="manifest">
+            <span class="panel-kicker">MANIFEST INSPECTOR</span>
+            <p>Select a build to inspect its captured artifact names.</p>
+          </div>
+          <div class="release-action">
+            <div>
+              <h4>Process one pending release</h4>
+              <p>
+                Creates a local preview, then acknowledges its event. No
+                artifact is uploaded.
+              </p>
+            </div>
+            <button id="process" class="outline">Process next →</button>
+          </div>
+          <p id="release-status" class="status" role="status"></p>
+        </section>
+      </div>
+      <section class="lab panel" id="failure-lab">
+        <div class="panel-head">
+          <div>
+            <div class="panel-kicker orange">02 / BREAK THE HAPPY PATH</div>
+            <h2>What if the response never arrives?</h2>
+            <p>
+              These disposable fixtures run the Rust publication policy. Your
+              build journal stays separate.
+            </p>
+          </div>
+          <span class="tag">FAILURE SIMULATOR</span>
+        </div>
+        <div class="lab-controls">
+          <label for="scenario">Choose a failure boundary</label
+          ><select id="scenario">
+            <option value="preview_after">
+              Preview committed / response lost
+            </option>
+            <option value="save_after">Build committed / response lost</option>
+            <option value="save_before">Store unavailable before write</option>
+            <option value="preview_before">
+              Preview unavailable before effect
+            </option>
+            <option value="ack_after">
+              Queue ack committed / response lost
+            </option>
+            <option value="success">No injected failure</option></select
+          ><button id="run-lab" class="dark">
+            Run first attempt + retry →
+          </button>
+        </div>
+        <div id="lab-result" class="lab-result" role="status">
+          <p class="fine">
+            Predict the result before running. Does an error mean nothing
+            happened?
+          </p>
+        </div>
+      </section>
+      <section id="study" class="study">
+        <div class="section-title">
+          <h2><span>03</span> Study the seams</h2>
+          <span class="fine">ONE SYSTEM / FIVE DESIGN QUESTIONS</span>
+        </div>
+        <div
+          class="principles"
+          role="group"
+          aria-label="SOLID study principles"
+        >
+          <button data-principle="srp" aria-pressed="true">01 / SRP</button
+          ><button data-principle="ocp" aria-pressed="false">02 / OCP</button
+          ><button data-principle="lsp" aria-pressed="false">03 / LSP</button
+          ><button data-principle="isp" aria-pressed="false">04 / ISP</button
+          ><button data-principle="dip" aria-pressed="false">05 / DIP</button>
+        </div>
+        <div id="lesson" class="lesson"></div>
+      </section>
+      <footer>
+        <span>RELEASE CONSOLE / LEARN BY MAKING A PROMISE TESTABLE</span
+        ><span>LOCAL BUILD LAB · NOT A HOSTED RELEASE SERVICE</span>
+      </footer>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

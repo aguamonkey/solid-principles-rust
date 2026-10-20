@@ -9,7 +9,7 @@ def check() -> list[str]:
     failures: list[str] = []
     documents = sorted(ROOT.rglob("*.md"))
     for document in documents:
-        if any(part in {"target", ".venv", ".git"} for part in document.relative_to(ROOT).parts):
+        if any(part in {"target", ".venv", ".git", "node_modules", "test-results", "playwright-report"} for part in document.relative_to(ROOT).parts):
             continue
         text = re.sub(r"```[^\n]*\n.*?```", "", document.read_text(), flags=re.S)
         for href in re.findall(r"!?\[[^\]]*\]\(([^)]+)\)", text):
